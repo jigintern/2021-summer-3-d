@@ -2,4 +2,4 @@
 
 #server
 rm ./project.db
-deno run -A --watch server.js
+deno run -A server.js
