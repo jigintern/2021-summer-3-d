@@ -1,9 +1,9 @@
-import {Router} from "./deps.js";
+import {Router} from "../deps.js";
 import {
   testRouter,
   getArticles,
   getArticle
-} from "./controllers/api.js";
+} from "../controllers/api.js";
 
 const router = new Router();
 

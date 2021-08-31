@@ -18,7 +18,7 @@ export const testRouter = ({response}) => {
  */
 export const getArticles = ({response}) => {
   // get articles from database
-  const articles = [{name: "samedatas"}];
+  const articles = [{name: "somedatas"}];
 
   if(articles) {
     response.status = 200;
