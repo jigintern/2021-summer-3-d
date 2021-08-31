@@ -2,40 +2,22 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
+      color="dark"
       dark
+      height=100
     >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
+      <v-toolbar-title class="text-h4 ml-4">
+        Service name
+      </v-toolbar-title>
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      <v-toolbar-items>
+        <v-btn text to="/post">設定</v-btn>
+      </v-toolbar-items>
     </v-app-bar>
+
+    <v-card
+      elevation="2"
+    ></v-card>
 
     <v-main>
       <router-view/>
