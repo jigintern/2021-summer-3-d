@@ -1,3 +1,4 @@
+import db from "../db/setupDB.js";
 
 /**
  * @desc test
@@ -18,7 +19,7 @@ export const testRouter = ({response}) => {
  */
 export const getArticles = ({response}) => {
   // get articles from database
-  const articles = [{name: "somedatas"}];
+  const articles = db.queryEntries("SELECT * FROM articles");
 
   if(articles) {
     response.status = 200;
@@ -42,7 +43,8 @@ export const getArticles = ({response}) => {
  */
 export const getArticle = ({params, response}) => {
   // get articles from database by params(id)
-  const article = {name: "singledata"};
+  const articles = db.queryEntries("SELECT * FROM articles");
+  const article = articles.find(a => a.id === +params.id);
 
   if(article) {
     response.status = 200;
