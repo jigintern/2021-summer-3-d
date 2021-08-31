@@ -4,7 +4,8 @@ import {
   getArticles,
   getArticle,
   addArticle,
-  updateArticle
+  updateArticle,
+  deleteArticle
 } from "../controllers/api.js";
 
 const router = new Router();
@@ -15,5 +16,6 @@ router
   .get('/api/articles/:id', getArticle)
   .post('/api/articles', addArticle)
   .put('/api/articles/:id', updateArticle)
+  .delete('/api/articles/:id', deleteArticle)
 
 export default router;

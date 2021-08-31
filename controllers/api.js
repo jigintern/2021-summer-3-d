@@ -37,7 +37,7 @@ export const getArticles = ({response}) => {
 }
 
 /**
- * @desc get article
+ * @desc get article by id
  * @param {object} {params, response} 
  * @return {object} {success, data}
  */
@@ -62,7 +62,7 @@ export const getArticle = ({params, response}) => {
 }
 
 /**
- * @desc add articles
+ * @desc add article
  * @param {object} {request, response} 
  * @return {object} {success, data}
  */
@@ -102,7 +102,7 @@ export const addArticle = async ({request, response}) => {
 }
 
 /**
- * @desc update articles
+ * @desc update article by id
  * @param {object} {params, request, response} 
  * @return {object} {success, data}
  */
@@ -147,6 +147,39 @@ export const updateArticle = async ({params, request, response}) => {
     response.body = {
       success: true,
       data: updatedArticle
+    }
+  }
+}
+
+/**
+ * @desc delete article by id
+ * @param {object} {params, response} 
+ * @return {object} {success, data}
+ */
+export const deleteArticle = ({params, response}) => {
+
+  const id = params.id;
+
+  // find article from database by id
+  const article = db.queryEntries(`SELECT * FROM articles WHERE id = ${+id}`);
+
+  if(!article) {
+    response.status = 404;
+    response.body = {
+      success: false,
+      data: null,
+      msg: `No such article in the database id: ${id}`
+    }
+  } else {
+
+    // update article in the database (forEach clumns) to fix!!!
+    db.query(`delete from articles where id = ${+id}`);
+  
+    // res
+    response.status = 201;
+    response.body = {
+      success: true,
+      data: article
     }
   }
 }
