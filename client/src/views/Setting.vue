@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
-    <h1>This is an setting page</h1>
-  </div>
+  <v-app :style="{ background: $vuetify.theme.themes.light.background }">
+    
+  </v-app>
 </template>
