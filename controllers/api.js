@@ -37,7 +37,7 @@ export const getArticles = ({response}) => {
 }
 
 /**
- * @desc get articles
+ * @desc get article
  * @param {object} {params, response} 
  * @return {object} {success, data}
  */
@@ -57,6 +57,46 @@ export const getArticle = ({params, response}) => {
     response.body = {
       success: false,
       data: null
+    }
+  }
+}
+
+/**
+ * @desc add articles
+ * @param {object} {request, response} 
+ * @return {object} {success, data}
+ */
+export const addArticle = async ({request, response}) => {
+  // get request body
+  const body = await request.body();
+  const article = await body.value;
+
+  // validation here
+
+  // you should more strict validation after!!
+  if(!article.name) {
+    response.status = 404;
+    response.body = {
+      success: false,
+      data: null,
+      msg: "No contents of the request"
+    }
+  } else {
+
+    // uuid
+    article.id = globalThis.crypto.randomUUID();
+
+    // insert this article to the database
+    db.query(
+      `INSERT INTO articles (name) VALUES ((?))`,
+      ["sampleArticles3"]
+    );
+
+    // res
+    response.status = 201;
+    response.body = {
+      success: true,
+      data: article
     }
   }
 }

@@ -19,7 +19,7 @@ POST http://localhost:8004/api/articles HTTP/1.1
 Content-Type: application/json
 
 {
-
+  "name": "Test User"
 }
 
 #### PUT
