@@ -1,10 +1,19 @@
 import {Application, log, send} from "./deps.js";
+import router from "./router.js";
 
 const app = new Application();
 
-// routing
+// logging request
+app.use(async (ctx, next) => {
+  await next();
+  log.info(`${ctx.request.method}: ${ctx.request.url}`);
+})
 
-// serve index.html in the static folder if not much routing
+// routing
+app.use(router.routes());
+app.use(router.allowedMethods());
+
+// serve index.html in the static folder
 app.use(async (ctx, next) => {
   const filePath = ctx.request.url.pathname;
 
