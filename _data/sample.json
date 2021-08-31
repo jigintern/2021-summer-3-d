@@ -1,0 +1,57 @@
+[
+    {
+      "id": 1,
+      "UserName": "Test User 1",
+      "GameName": "Apex",
+      "profile": "Apexのプロを１年やってます。",
+      "schedule": [
+          {
+              "menu": "Apex",
+              "start_time": "18",
+              "end_time": "22"
+          },
+          {
+              "menu": "ご飯",
+              "start_time": "22",
+              "end_time": "23"
+          },
+          {
+              "menu": "Apex",
+              "start_time": "23",
+              "end_time": "3"
+          }
+      ],
+      "meal_description": "食生活では、お肉多めご飯少なめにしています。エナジードリンクは余り飲まないようにしています。",
+      "notice": "Apexはとてもイライラすることも多いので、無理せずイライラするときはランク溶かす前にやめるのも重要です。"
+  },
+  {
+      "id": 2,
+      "UserName": "Test User 2",
+      "GameName": "Valorant",
+      "profile": "Valorantのプロを１年やってます。",
+      "schedule": [
+          {
+              "menu": "Valorant",
+              "start_time": "8",
+              "end_time": "12"
+          },
+          {
+              "menu": "ご飯",
+              "start_time": "12",
+              "end_time": "13"
+          },
+          {
+              "menu": "Valorant",
+              "start_time": "13",
+              "end_time": "18"
+          },
+          {
+              "menu": "お風呂",
+              "start_time": "19",
+              "end_time": "20"
+          }
+      ],
+      "meal_description": "エナドリガンガン飲みます。",
+      "notice": "一日のスケジュールの中でプレイする時間をできるだけ増やすことで、体に慣れさせるのがコツです。"
+  }
+]
