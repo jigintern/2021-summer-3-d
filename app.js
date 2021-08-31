@@ -1,5 +1,5 @@
 import {Application, log, send} from "./deps.js";
-import router from "./router.js";
+import router from "./routes/router.js";
 
 const app = new Application();
 
@@ -20,7 +20,7 @@ app.use(async (ctx, next) => {
   // filter path to only accept "/"
   if(filePath === "/") {
 
-    log.info('Served index.html successfuly');
+    log.info('Served index.html successfully');
 
     const indexPagePath = `${filePath}index.html`
     await send(ctx, indexPagePath, {
