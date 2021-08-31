@@ -100,3 +100,53 @@ export const addArticle = async ({request, response}) => {
     }
   }
 }
+
+/**
+ * @desc update articles
+ * @param {object} {params, request, response} 
+ * @return {object} {success, data}
+ */
+export const updateArticle = async ({params, request, response}) => {
+  // get request body
+  const body = await request.body();
+  const UpdateContent = await body.value;
+  const id = params.id;
+
+  // validation here
+
+  // you should more strict validation after!!
+  if(!UpdateContent.name) {
+    response.status = 404;
+    response.body = {
+      success: false,
+      data: null,
+      msg: "No contents of the request"
+    }
+  }
+
+  // find article from database by id
+  const article = db.queryEntries(`SELECT * FROM articles WHERE id = ${+id}`);
+
+  if(!article) {
+    response.status = 404;
+    response.body = {
+      success: false,
+      data: null,
+      msg: `No such article in the database id: ${id}`
+    }
+  } else {
+
+    // update article
+    const updatedArticle = {...article[0], ...UpdateContent};
+
+    // update article in the database (forEach clumns) to fix!!!
+    db.query(`update articles set name = '${updatedArticle.name}' where id = ${+id}`);
+  
+    // res
+    response.status = 201;
+    response.body = {
+      success: true,
+      data: updatedArticle
+    }
+  }
+}
