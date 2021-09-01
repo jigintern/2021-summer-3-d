@@ -25,9 +25,23 @@ router.get('/', async (ctx, next) => {
 app.use(async (ctx, next) => {
   const filePath = ctx.request.url.pathname;
 
-  await send(ctx, filePath, {
+  // regex to find .js .css in filePath
+  let reg = /.css|.js$/;
+  const result = filePath.match(reg);
+
+  if(result) {
+
+    // send js css file
+    await send(ctx, filePath, {
+      root: `${Deno.cwd()}/static`
+    })
+  } else {
+
+    // send index.js
+    await send(ctx, "/index.html", {
     root: `${Deno.cwd()}/static`
-  })
+    })
+  }
 })
 
 export default app;
