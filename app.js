@@ -13,20 +13,21 @@ app.use(async (ctx, next) => {
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-// serve index.html in the static folder
+// serve index.html
+router.get('/', async (ctx, next) => {
+  await send(ctx, "/index.html", {
+  root: `${Deno.cwd()}/static`
+  })
+  log.info("Serve index.html successfully");
+})
+
+// serve other files in the static folder
 app.use(async (ctx, next) => {
   const filePath = ctx.request.url.pathname;
 
-  // filter path to only accept "/"
-  if(filePath === "/") {
-
-    log.info('Served index.html successfully');
-
-    const indexPagePath = `${filePath}index.html`
-    await send(ctx, indexPagePath, {
-      root: `${Deno.cwd()}/static`
-    })
-  }
+  await send(ctx, filePath, {
+    root: `${Deno.cwd()}/static`
+  })
 })
 
 export default app;
