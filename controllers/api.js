@@ -1,6 +1,7 @@
 import db from "../db/setupDB.js";
 import { log } from "../deps.js";
 import {articleValidation} from "../utils/validation.js";
+import {createUpdateQuery} from "../utils/query.js";
 
 /**
  * @desc test
@@ -23,21 +24,22 @@ export const getArticles = ({response}) => {
   // get articles from database
   const articles = db.queryEntries("SELECT * FROM articles");
 
-  // convert text of schedule to JSON
+  if(articles == "") {
+    response.status = 404;
+    return response.body = {
+      success: false,
+      data: [],
+      msg: `No contents of article.`
+    }
+  }
+
+  // convert schedule to JSON
   articles.forEach(a => a.schedule = JSON.parse(a.schedule))
 
-  if(articles) {
-    response.status = 200;
-    response.body = {
-      success: true,
-      data: articles
-    }
-  } else {
-    response.status = 404;
-    response.body = {
-      success: false,
-      data: []
-    }
+  response.status = 200;
+  response.body = {
+    success: true,
+    data: articles
   }
 }
 
@@ -47,25 +49,29 @@ export const getArticles = ({response}) => {
  * @return {object} {success, data}
  */
 export const getArticle = ({params, response}) => {
+
   // get articles from database by params(id)
-  const articles = db.queryEntries("SELECT * FROM articles");
-  const article = articles.find(a => a.id === +params.id);
+  let article = db.queryEntries(`SELECT * FROM articles WHERE id = ${+params.id}`);
+  
+  if(article == "") {
+    response.status = 404;
+    return response.body = {
+      success: false,
+      data: null,
+      msg: `No such article in the database id: ${+params.id}`
+    }
+  }
+  
+  // articleは１個の要素を持つリストになっている
+  article = article[0];
 
   // convert text of schedule to JSON
   article.schedule = JSON.parse(article.schedule);
 
-  if(article) {
-    response.status = 200;
-    response.body = {
-      success: true,
-      data: article
-    }
-  } else {
-    response.status = 404;
-    response.body = {
-      success: false,
-      data: null
-    }
+  response.status = 200;
+  response.body = {
+    success: true,
+    data: article
   }
 }
 
@@ -80,21 +86,28 @@ export const addArticle = async ({request, response}) => {
   const article = await body.value;
 
   // validate article to find null value
-  const result = articleValidation(article);
+  const errorMessage = articleValidation(article);
 
   // if article has null value return error response
-  if(result) {
+  if(errorMessage) {
     response.status = 400;
     return response.body = {
       success: false,
       data: null,
-      msg: `Please input ${result}.`
+      msg: `Please input ${errorMessage}.`
     }
   }
 
   // insert article into database
   db.query(
-    `INSERT INTO articles (userName, gameName, profile, schedule, meal_description, notice) VALUES (
+    `INSERT INTO articles (
+      userName,
+      gameName,
+      profile,
+      schedule,
+      meal_description,
+      notice
+    ) VALUES (
       (?), (?), (?), (?), (?), (?)
     )`,
     [
@@ -125,45 +138,57 @@ export const addArticle = async ({request, response}) => {
 export const updateArticle = async ({params, request, response}) => {
   // get request body
   const body = await request.body();
-  const UpdateContent = await body.value;
-  const id = params.id;
+  const updateContent = await body.value;
 
-  // validation here
+  // validate updateContent to find null value
+  const result = articleValidation(updateContent);
 
-  // you should more strict validation after!!
-  if(!UpdateContent.name) {
-    response.status = 404;
-    response.body = {
+  // if updateContent has null value return error response
+  if(result) {
+    response.status = 400;
+    return response.body = {
       success: false,
       data: null,
-      msg: "No contents of the request"
+      msg: `Don't set null value on: ${result}.`
     }
   }
 
   // find article from database by id
-  const article = db.queryEntries(`SELECT * FROM articles WHERE id = ${+id}`);
+  const article = db.queryEntries(`SELECT * FROM articles WHERE id = ${+params.id}`);
 
-  if(!article) {
+  if(article == "") {
     response.status = 404;
-    response.body = {
+    return response.body = {
       success: false,
       data: null,
-      msg: `No such article in the database id: ${id}`
+      msg: `No such article in the database id: ${+params.id}`
     }
-  } else {
+  }
 
-    // update article
-    const updatedArticle = {...article[0], ...UpdateContent};
+  // JSON stringify (schedule) to compare
+  if(updateContent.schedule) {
+    updateContent.schedule = JSON.stringify(updateContent.schedule)
+  }
 
-    // update article in the database (forEach clumns) to fix!!!
-    db.query(`update articles set name = '${updatedArticle.name}' where id = ${+id}`);
-  
-    // res
-    response.status = 201;
-    response.body = {
-      success: true,
-      data: updatedArticle
-    }
+  // update article
+  const updatedArticle = {...article[0], ...updateContent};
+
+  // insert article into database
+  const query = createUpdateQuery(updateContent, +params.id);
+
+  // execute query
+  db.query(query);
+
+  log.info("Update article successfully")
+
+  // JSON parse to response
+  updatedArticle.schedule = JSON.parse(updatedArticle.schedule)
+
+  // res
+  response.status = 201;
+  response.body = {
+    success: true,
+    data: updatedArticle
   }
 }
 
@@ -174,28 +199,33 @@ export const updateArticle = async ({params, request, response}) => {
  */
 export const deleteArticle = ({params, response}) => {
 
-  const id = params.id;
-
   // find article from database by id
-  const article = db.queryEntries(`SELECT * FROM articles WHERE id = ${+id}`);
+  let article = db.queryEntries(`SELECT * FROM articles WHERE id = ${+params.id}`);
 
-  if(!article) {
+  if(article == "") {
     response.status = 404;
-    response.body = {
+    return response.body = {
       success: false,
       data: null,
-      msg: `No such article in the database id: ${id}`
+      msg: `No such article in the database id: ${+params.id}`
     }
-  } else {
+  }
 
-    // update article in the database (forEach clumns) to fix!!!
-    db.query(`delete from articles where id = ${+id}`);
-  
-    // res
-    response.status = 201;
-    response.body = {
-      success: true,
-      data: article
-    }
+  // articleは１個の要素を持つリストになっている
+  article = article[0]
+
+  // delete article by id
+  db.query(`delete from articles where id = ${+params.id}`);
+
+  log.info(`delete article id: ${+params.id} successfully`);
+
+  // JSON parse to response
+  article.schedule = JSON.parse(article.schedule)
+
+  // res
+  response.status = 200;
+  response.body = {
+    success: true,
+    data: article
   }
 }

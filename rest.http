@@ -18,18 +18,7 @@ Content-Type: application/json
     "userName": "Test User 1",
     "gameName": "",
     "profile": "Test User Profile",
-    "schedule": [
-        {
-            "menu": "Valorant",
-            "start_time": "8",
-            "end_time": "12"
-        },
-        {
-            "menu": "ご飯",
-            "start_time": "12",
-            "end_time": "13"
-        }
-    ],
+    "schedule": [],
     "meal_description": "エナドリガンガン飲みます。",
     "notice": ""
 }
@@ -58,13 +47,30 @@ Content-Type: application/json
     "notice": "Test Notice"
 }
 
-#### PUT
+#### PUT invalid nontents
 PUT http://localhost:8004/api/articles/1 HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "updated article"
+    "userName": "updated article",
+    "gameName": ""
+}
+
+#### PUT valid nontents
+PUT http://localhost:8004/api/articles/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "userName": "updated userName",
+    "gameName": "update gameName",
+    "schedule": [
+        {
+            "menu": "Pokemon",
+            "start_time": "12",
+            "end_time": "19"
+        }
+    ]
 }
 
 #### DELETE
-DELETE http://localhost:8004/api/articles/1 HTTP/1.1
+DELETE http://localhost:8004/api/articles/2 HTTP/1.1
