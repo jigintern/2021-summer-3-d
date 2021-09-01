@@ -5,8 +5,8 @@ const app = new Application();
 
 // logging request
 app.use(async (ctx, next) => {
-  await next();
   log.info(`${ctx.request.method}: ${ctx.request.url}`);
+  await next();
 })
 
 // routing

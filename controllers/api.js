@@ -1,4 +1,6 @@
 import db from "../db/setupDB.js";
+import { log } from "../deps.js";
+import {articleValidation} from "../utils/validation.js";
 
 /**
  * @desc test
@@ -20,6 +22,9 @@ export const testRouter = ({response}) => {
 export const getArticles = ({response}) => {
   // get articles from database
   const articles = db.queryEntries("SELECT * FROM articles");
+
+  // convert text of schedule to JSON
+  articles.forEach(a => a.schedule = JSON.parse(a.schedule))
 
   if(articles) {
     response.status = 200;
@@ -46,6 +51,9 @@ export const getArticle = ({params, response}) => {
   const articles = db.queryEntries("SELECT * FROM articles");
   const article = articles.find(a => a.id === +params.id);
 
+  // convert text of schedule to JSON
+  article.schedule = JSON.parse(article.schedule);
+
   if(article) {
     response.status = 200;
     response.body = {
@@ -71,33 +79,41 @@ export const addArticle = async ({request, response}) => {
   const body = await request.body();
   const article = await body.value;
 
-  // validation here
+  // validate article to find null value
+  const result = articleValidation(article);
 
-  // you should more strict validation after!!
-  if(!article.name) {
-    response.status = 404;
-    response.body = {
+  // if article has null value return error response
+  if(result) {
+    response.status = 400;
+    return response.body = {
       success: false,
       data: null,
-      msg: "No contents of the request"
+      msg: `Please input ${result}.`
     }
-  } else {
+  }
 
-    // uuid
-    article.id = globalThis.crypto.randomUUID();
+  // insert article into database
+  db.query(
+    `INSERT INTO articles (userName, gameName, profile, schedule, meal_description, notice) VALUES (
+      (?), (?), (?), (?), (?), (?)
+    )`,
+    [
+      article.userName,
+      article.gameName,
+      article.profile,
+      JSON.stringify(article.schedule),
+      article.meal_description,
+      article.notice
+    ]
+  );
 
-    // insert this article to the database
-    db.query(
-      `INSERT INTO articles (name) VALUES ((?))`,
-      ["sampleArticles3"]
-    );
+  log.info("Insert article to database successfully");
 
-    // res
-    response.status = 201;
-    response.body = {
-      success: true,
-      data: article
-    }
+  // res
+  response.status = 201;
+  response.body = {
+    success: true,
+    data: article
   }
 }
 

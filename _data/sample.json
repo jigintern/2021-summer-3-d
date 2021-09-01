@@ -1,8 +1,8 @@
 [
     {
       "id": 1,
-      "UserName": "Test User 1",
-      "GameName": "Apex",
+      "userName": "Test User 1",
+      "gameName": "Apex",
       "profile": "Apexのプロを１年やってます。",
       "schedule": [
           {
@@ -26,8 +26,8 @@
   },
   {
       "id": 2,
-      "UserName": "Test User 2",
-      "GameName": "Valorant",
+      "userName": "Test User 2",
+      "gameName": "Valorant",
       "profile": "Valorantのプロを１年やってます。",
       "schedule": [
           {

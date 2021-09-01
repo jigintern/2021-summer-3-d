@@ -8,18 +8,32 @@ log.info("Database build successfully");
 db.query(`
   CREATE TABLE IF NOT EXISTS articles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT
+    userName TEXT,
+    gameName TEXT,
+    profile TEXT,
+    schedule TEXT,
+    meal_description TEXT,
+    notice TEXT
   )
 `);
 
-// add sample data (test)
-db.query(
-  `INSERT INTO articles (name) VALUES ((?))`,
-  ["sampleArticles1"]
-);
-db.query(
-  `INSERT INTO articles (name) VALUES ((?))`,
-  ["sampleArticles2"]
-);
+// import articles data from _data folder
+const articles = JSON.parse(Deno.readTextFileSync("./_data/sample.json"));
+
+articles.forEach((article, index) => {
+  db.query(
+    `INSERT INTO articles (userName, gameName, profile, schedule, meal_description, notice) VALUES (
+      (?), (?), (?), (?), (?), (?)
+    )`,
+    [
+      article.userName,
+      article.gameName,
+      article.profile,
+      JSON.stringify(article.schedule),
+      article.meal_description,
+      article.notice
+    ]
+  );
+})
 
 export default db;
