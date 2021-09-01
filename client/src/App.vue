@@ -7,7 +7,6 @@
         <v-col>
           <div class="my-8" />
           <v-text-field
-            v-model="message"
             label="検索"
             placeholder="検索"
             solo
@@ -36,7 +35,7 @@ export default {
   name: "App",
 
   data: () => ({
-    //
+    
   }),
 };
 </script>
