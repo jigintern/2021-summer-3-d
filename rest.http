@@ -10,16 +10,52 @@ GET http://localhost:8004/api/articles HTTP/1.1
 #### GET single
 GET http://localhost:8004/api/articles/1 HTTP/1.1
 
-#### POST not contents
-POST http://localhost:8004/api/articles HTTP/1.1
-Content-Type: application/json
-
-#### POST with nontents
+#### POST invalid nontents
 POST http://localhost:8004/api/articles HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "Test User"
+    "userName": "Test User 1",
+    "gameName": "",
+    "profile": "Test User Profile",
+    "schedule": [
+        {
+            "menu": "Valorant",
+            "start_time": "8",
+            "end_time": "12"
+        },
+        {
+            "menu": "ご飯",
+            "start_time": "12",
+            "end_time": "13"
+        }
+    ],
+    "meal_description": "エナドリガンガン飲みます。",
+    "notice": ""
+}
+
+#### POST valid nontents
+POST http://localhost:8004/api/articles HTTP/1.1
+Content-Type: application/json
+
+{
+    "userName": "Test UserName 1",
+    "gameName": "Test GameName 1",
+    "profile": "Test User Profile",
+    "schedule": [
+        {
+            "menu": "Valorant",
+            "start_time": "8",
+            "end_time": "12"
+        },
+        {
+            "menu": "ご飯",
+            "start_time": "12",
+            "end_time": "13"
+        }
+    ],
+    "meal_description": "エナドリガンガン飲みます。",
+    "notice": "Test Notice"
 }
 
 #### PUT
