@@ -1,8 +1,9 @@
 <template>
     <div>
-        <p class="user_name_list list user_name">{{userName}} </p>
-        <p class="game_name_list list game_name">{{gameName}} </p>
-        <p class="comment">{{userComment}}</p>
+        <a href="/article" class="user_name_list list user_name">{{ userName }}</a>
+        <!-- <v-btn text :to="{ name: 'Article', params: { selectId: article.id }}" right>詳細を見る</v-btn> -->
+        <p class="game_name_list list game_name">{{ gameName }}</p>
+        <p class="comment">{{ userComment }}</p>
     </div>
 </template>
 
@@ -12,21 +13,21 @@
         props: {
             userName: {
                 type: String,
-                default: 'User_name',
-                required: true
+                default: "User_name",
+                required: true,
             },
             gameName: {
                 type: String,
-                default: 'Game_name',
-                required: true
+                default: "Game_name",
+                required: true,
             },
-            userComment:{
-                type:String,
-                default:"---------------------------",
-                require:true
-            }
-        }
-    }
+            userComment: {
+                type: String,
+                default: "---------------------------",
+                require: true,
+            },
+        },
+    };
 </script>
 
 <style>
@@ -40,23 +41,23 @@
     }
 
     .user_name_list::before {
-        content: '';
+        content: "";
         display: inline-block;
         border-radius: 30px;
         width: 40px;
         height: 40px;
         margin-right: 16px;
-        background-color: #FEA666;
+        background-color: #fea666;
     }
 
     .game_name_list::before {
-        content: '';
+        content: "";
         display: inline-block;
         border-radius: 30px;
         width: 20px;
         height: 20px;
         margin-right: 16px;
-        background-color: #4C96E4;
+        background-color: #4c96e4;
     }
 
     p.user_icon {
@@ -64,7 +65,7 @@
         height: 35px;
         margin-left: -24px;
         border-radius: 50px;
-        background: #FEA666;
+        background: #fea666;
     }
 
     .user_name {
@@ -79,7 +80,7 @@
         font-size: 27px;
         line-height: 32px;
 
-        color: #FEA666;
+        color: #fea666;
     }
 
     .game_icon {
@@ -89,7 +90,7 @@
         top: 241px;
         border-radius: 50px;
 
-        background: #4C96E4;
+        background: #4c96e4;
     }
 
     .game_name {
@@ -104,7 +105,7 @@
         font-size: 20px;
         line-height: 23px;
 
-        color: #4C96E4;
+        color: #4c96e4;
     }
 
     .comment {
@@ -119,6 +120,6 @@
         font-size: 23px;
         line-height: 27px;
 
-        color: #FFFFFF;
+        color: #ffffff;
     }
 </style>
