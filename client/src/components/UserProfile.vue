@@ -22,11 +22,6 @@
                 default: 'Game_name',
                 required: true
             },
-            // top_usericon:{
-            //     type:String,
-            //     default:"191px",
-            //     required:true
-            // }
         }
     }
 </script>
@@ -38,9 +33,9 @@
     }
 
     .user_name_list {
-        margin-left: -24px;
+        margin-left: -37px;
     }
-    
+
     .user_name_list::before {
         content: '';
         display: inline-block;
