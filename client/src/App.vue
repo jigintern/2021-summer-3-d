@@ -1,4 +1,4 @@
-<<template>
+<template>
   <v-app>
     <v-app-bar app color="dark" dark height="100">
       <v-toolbar-title class="text-h4 ml-4"> Service name </v-toolbar-title>
