@@ -1,17 +1,16 @@
 <template>
   <v-app :style="{ background: $vuetify.theme.themes.light.background }">
+    <!-- <sidebar></sidebar> -->
+    <h1 style="color:white; font-family:roboto;">User_List</h1>
+    <v-divider style="background-color:#8A8989;"></v-divider>
     <v-container>
       <v-row class="flex-column" align-content="center">
-        <v-col cols="1" md="6" v-for="n in 20" :key="n">
-          <div class="my-5" />
-          <v-card dark raised width="800" class="ma-2">
-            <v-card-title class="headline">ゲーマー生活</v-card-title>
-            <v-card-subtitle>ゲーマー</v-card-subtitle>
-            <v-divider class="mx-3"></v-divider>
-            <v-card-text>
-              <div class="body-1 mb-1">ゲーム楽しい</div>
-            </v-card-text>
-          </v-card>
+        <v-col cols="1" md="6" v-for="user in users" :key="user">
+          <UserProfile
+            :userName="user.userName"
+            :gameName="user.gameName"
+            :userComment="user.userComment"
+          ></UserProfile>
         </v-col>
       </v-row>
     </v-container>
@@ -19,9 +18,35 @@
 </template>
 
 <script>
+import UserProfile from '../components/UserProfile.vue';
+// import sidebar from '../components/sidebar.vue';
 export default {
   name: "Home",
+  data () {
+    return {
+      users: [
+        {
+          userName: 'やまゆ',
+          gameName: 'Apex',
+          userComment:"aiueoevef"
+        },
+        {
+          userName: 'いつき',
+          gameName: 'Fortnite',
+          userComment:"aveefewrwetgege"
+        },
+        {
+          userName: 'マーシー',
+          gameName: 'R6S',
+          userComment:"vaerrgiikejkjek"
+        }
+      ]
+    }
+  },
 
-  components: {},
+  components: {
+    UserProfile,
+    // sidebar
+  },
 };
 </script>
