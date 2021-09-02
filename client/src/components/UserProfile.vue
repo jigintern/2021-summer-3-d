@@ -1,9 +1,9 @@
 <template>
     <div>
         <p class="user_icon"></p>
-        <p class="user_name">{{User_name}}</p>
+        <p class="user_name">{{userName}}</p>
         <p class="game_icon"></p>
-        <p class="game_name">{{Game_name}}</p>
+        <p class="game_name">{{gameName}}</p>
         <p class="comment">
             -----------------------------------------------------------------------------------------------------------------------
         </p>
@@ -14,12 +14,12 @@
     export default {
         name: "UserProfile",
         props: {
-            User_name: {
+            userName: {
                 type: String,
                 default: 'User_name',
                 required: true
             },
-            Game_name: {
+            gameName: {
                 type: String,
                 default: 'Game_name',
                 required: true
