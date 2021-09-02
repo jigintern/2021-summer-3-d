@@ -2,9 +2,7 @@
     <div>
         <p class="user_name_list list user_name">{{userName}} </p>
         <p class="game_name_list list game_name">{{gameName}} </p>
-        <p class="comment">
-            -----------------------------------------------------------------------------------------------------------------------
-        </p>
+        <p class="comment">{{userComment}}</p>
     </div>
 </template>
 
@@ -22,6 +20,11 @@
                 default: 'Game_name',
                 required: true
             },
+            userComment:{
+                type:String,
+                default:"---------------------------",
+                require:true
+            }
         }
     }
 </script>

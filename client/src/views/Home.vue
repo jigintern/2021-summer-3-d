@@ -9,6 +9,7 @@
           <UserProfile
             :userName="user.userName"
             :gameName="user.gameName"
+            :userComment="user.userComment"
           ></UserProfile>
         </v-col>
       </v-row>
@@ -26,15 +27,18 @@ export default {
       users: [
         {
           userName: 'やまゆ',
-          gameName: 'Apex'
+          gameName: 'Apex',
+          userComment:"aiueoevef"
         },
         {
           userName: 'いつき',
-          gameName: 'Fortnite'
+          gameName: 'Fortnite',
+          userComment:"aveefewrwetgege"
         },
         {
           userName: 'マーシー',
-          gameName: 'R6S'
+          gameName: 'R6S',
+          userComment:"vaerrgiikejkjek"
         }
       ]
     }
