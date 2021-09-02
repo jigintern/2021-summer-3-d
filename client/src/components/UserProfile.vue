@@ -1,9 +1,7 @@
 <template>
     <div>
-        <p class="user_icon"></p>
-        <p class="user_name">{{userName}}</p>
-        <p class="game_icon"></p>
-        <p class="game_name">{{gameName}}</p>
+        <p class="user_name_list list user_name">{{userName}} </p>
+        <p class="game_name_list list game_name">{{gameName}} </p>
         <p class="comment">
             -----------------------------------------------------------------------------------------------------------------------
         </p>
@@ -34,13 +32,40 @@
 </script>
 
 <style>
+    .list {
+        display: flex;
+        align-items: center;
+    }
+
+    .user_name_list {
+        margin-left: -24px;
+    }
+    
+    .user_name_list::before {
+        content: '';
+        display: inline-block;
+        border-radius: 30px;
+        width: 40px;
+        height: 40px;
+        margin-right: 16px;
+        background-color: #FEA666;
+    }
+
+    .game_name_list::before {
+        content: '';
+        display: inline-block;
+        border-radius: 30px;
+        width: 20px;
+        height: 20px;
+        margin-right: 16px;
+        background-color: #4C96E4;
+    }
+
     p.user_icon {
         width: 35px;
         height: 35px;
-        left: 289px;
-        top: 191px;
+        margin-left: -24px;
         border-radius: 50px;
-
         background: #FEA666;
     }
 
