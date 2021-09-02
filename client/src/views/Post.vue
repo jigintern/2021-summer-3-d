@@ -51,7 +51,7 @@
             </v-row>
           </v-col>
           <v-col>
-            <PieChart :chartData="chartItems" :options="chartOptions" />
+            <PieChart :chart-data="chartItems" :options="chartOptions" />
           </v-col>
         </v-row>
       </v-container>
@@ -148,9 +148,7 @@ export default {
     "vue-timepicker": VueTimePicker,
   },
   mounted: function() {
-    this.$nextTick(function() {
-
-    })
+    this.fillData()
   },
   data() {
     return {
@@ -162,7 +160,7 @@ export default {
         "Apexはとてもイライラすることも多いので、無理せずイライラするときはランク溶かす前にやめるのも重要です。",
       actionDataList: [],
       latestId: 0,
-
+      chartItems: null,
       startTimeObject: {
         HH: "00",
         mm: "00",
@@ -170,15 +168,6 @@ export default {
       endTimeObject: {
         HH: "00",
         mm: "00",
-      },
-      chartItems: {
-        datasets: [
-          {
-            label: "一日の生活",
-            data: [1440],
-            backgroundColor: "#847636",
-          },
-        ],
       },
       chartOptions: {
         //responsive: true,
@@ -189,19 +178,17 @@ export default {
   methods: {
     addActionData() {
       this.actionDataList.push({
-        //startTime: `${this.startTimeObject.HH}:${this.startTimeObject.mm}`,
-        //endTime: `${this.endTimeObject.HH}:${this.endTimeObject.mm}`,
         startTime: `${this.startTimeObject.HH}`,
         endTime: `${this.endTimeObject.HH}`,
         menu: this.actionContent,
       });
 
-      var list = this.actionDataList;
-      var addTime =
+      let list = this.actionDataList;
+      let addTime =
         (parseInt(list[list.length - 1].endTime) -
           parseInt(list[list.length - 1].startTime)) *
         60;
-      var maxTime =
+      let maxTime =
         this.chartItems.datasets[0]["data"][
           this.chartItems.datasets[0]["data"].length - 1
         ];
@@ -210,32 +197,31 @@ export default {
       this.chartItems.datasets[0]["data"][
         this.chartItems.datasets[0]["data"].length - 1
       ] = maxTime - addTime;
-      /*
-      console.log(parseInt(list[list.length-1].endTime));
-      console.log(parseInt(list[list.length-1].startTime));
-      console.log((parseInt(list[list.length-1].endTime) - parseInt(list[list.length-1].startTime)) * 60);
-      */
-      console.log(this.chartItems.datasets[0]["data"]);
 
-      //this.$refs.PieChart.reRenderChart();
-      //console.log("render chart");
-      /*
-      this.chartItems = {
-        labels: [this.getRandomInt(), this.getRandomInt()],
-        datasets: [
-          {
-            label: "Data One",
-            backgroundColor: "#f87979",
-            data: [this.getRandomInt(), this.getRandomInt()],
-          },
-          {
-            label: "Data One",
-            backgroundColor: "#f87979",
-            data: [this.getRandomInt(), this.getRandomInt()],
-          },
-        ],
-      };
-      */
+      this.fillData(this.chartItems.datasets[0]["data"])
+    },
+    fillData(props = "") {
+      if(!props) {
+        this.chartItems = {
+          datasets: [
+            {
+              label: "一日の生活",
+              backgroundColor: "#847636",
+              data: [1440],
+            },
+          ],
+        }
+      } else {
+        this.chartItems = {
+          datasets: [
+            {
+              label: "一日の生活",
+              backgroundColor: "#847636",
+              data: props,
+            },
+          ],
+        }
+      }
     },
     postData() {
       const config = {
@@ -266,7 +252,7 @@ export default {
           this.errored = true;
         })
         .finally(() => (this.loading = false));
-    },
+    }
   },
 };
 </script>
