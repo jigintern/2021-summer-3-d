@@ -288,7 +288,7 @@ export default {
       //const body = JSON.stringify();
       axios
         .post(
-          "http://localhost:8893/api/articles/",
+          "http://localhost:8893/api/articles",
           {
             userName: this.userName,
             gameName: this.gameName,
