@@ -62,8 +62,8 @@
                 </v-text-field>
                 <div v-if="this.actionDataList.length !== 0">
                   <div v-for="(action, key) in actionDataList" :key="key">
-                    <div v-if="action.startTime !== '' && action.endTime !== ''" class="white--text text-h5">
-                      ・{{ action.startTime }}～{{ action.endTime }}:{{
+                    <div v-if="action.start_time !== '' && action.end_time !== ''" class="white--text text-h5">
+                      ・{{ action.start_time }}～{{ action.end_time }}:{{
                         action.menu
                       }}
                     </div>
@@ -233,15 +233,15 @@ export default {
   methods: {
     addActionData() {
       this.actionDataList.push({
-        startTime: `${this.startTimeObject.HH}`,
-        endTime: `${this.endTimeObject.HH}`,
+        start_time: `${this.startTimeObject.HH}`,
+        end_time: `${this.endTimeObject.HH}`,
         menu: this.actionContent,
       });
 
       let list = this.actionDataList;
       let addTime =
-        (parseInt(list[list.length - 1].endTime) -
-          parseInt(list[list.length - 1].startTime)) *
+        (parseInt(list[list.length - 1].end_time) -
+          parseInt(list[list.length - 1].start_time)) *
         60;
       let maxTime =
         this.chartItems.datasets[0]["data"][
@@ -298,15 +298,15 @@ export default {
     },
     convertScheduleToChartItems(data) {
       this.actionDataList.push({
-        startTime: `${data.start_time}`,
-        endTime: `${data.end_time}`,
+        start_time: `${data.start_time}`,
+        end_time: `${data.end_time}`,
         menu: data.menu,
       });
 
       let list = this.actionDataList;
       let addTime =
-        (parseInt(list[list.length - 1].endTime) -
-          parseInt(list[list.length - 1].startTime)) *
+        (parseInt(list[list.length - 1].end_time) -
+          parseInt(list[list.length - 1].start_time)) *
         60;
       let maxTime =
         this.chartItems.datasets[0]["data"][
@@ -325,7 +325,25 @@ export default {
             "Content-Type": "application/json",
           },
         };
-        await axios.put(`http://localhost:8893/api/articles/${this.$route.params.id}`, config);
+
+        const body = {
+          "userName": this.userName,
+          "gameName": this.gameName,
+          "profile": this.profile,
+          "schedule": this.actionDataList,
+          "meal_description": this.mealCarefulContent,
+          "notice": this.gameCarefulContent
+        }
+
+        const {data} = await axios.put(`http://localhost:8893/api/articles/${this.$route.params.id}`, body, config);
+
+        if(data.success) {
+          // re-route "/"
+          this.$router.push("/")
+        } else {
+          alert(data.msg);
+        }
+
       } catch (err) {
         console.error(err)
       }

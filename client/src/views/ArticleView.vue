@@ -3,12 +3,12 @@
     <v-app :style="{ background: $vuetify.theme.themes.light.background }">
       <div class="my-5" />
       <v-container>
-        <v-row justify="center" align-content="center" style="width: 400px">
+        <v-row justify="center" align-content="center" style="width: 800px">
           <v-col>
-            <v-btn color="blue" text :to="editPath">編集する</v-btn>
+            <v-btn color="blue" :to="`/edit/${this.$route.params.selectId}`">編集する</v-btn>
           </v-col>
           <v-col>
-            <v-btn color="blue" text >削除する</v-btn>
+            <v-btn color="blue" v-on:click="onDelete()" >削除する</v-btn>
           </v-col>
         </v-row>
         <v-row justify="center" align-content="center">
@@ -51,7 +51,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <div class="my-15" />
+      <div class="my-5" />
       <v-container>
         <v-row justify="center" align-content="center">
           <v-col>
@@ -65,6 +65,7 @@
             <div class="white--text text-h5">{{ gameCarefulContent }}</div>
           </v-col>
         </v-row>
+        <div class="my-15" />
       </v-container>
     </v-app>
   </div>
@@ -76,7 +77,6 @@ import "vue2-timepicker/dist/VueTimepicker.css";
 import axios from "axios";
 export default {
   name: "Post",
-  props: ["selectId"],
   components: {
     PieChart,
   },
@@ -91,11 +91,9 @@ export default {
       beforeTime: 0,
       correntId: 1,
       dataList: [],
-      actionContent: "Apex",
-      mealCarefulContent:
-        "食生活では、お肉多めご飯少なめにしています。エナジードリンクは余り飲まないようにしています。",
-      gameCarefulContent:
-        "Apexはとてもイライラすることも多いので、無理せずイライラするときはランク溶かす前にやめるのも重要です。",
+      actionContent: null,
+      mealCarefulContent: null,
+      gameCarefulContent: null,
       actionDataList: [],
       scheduleList: [],
       startTimeObject: {
@@ -123,95 +121,87 @@ export default {
   },
   mounted: function () {
     axios
-      .get("http://localhost:8893/api/articles/")
+      .get(`http://localhost:8893/api/articles/${this.$route.params.selectId}`)
       .then((response) => {
         this.articleObject = response.data.data;
-        //this.articlesList.push(this.articleObject[0]);
-        this.correntId = this.selectId - 1;
-        this.mealCarefulContent =
-          this.articleObject[this.correntId].meal_description;
-        this.gameCarefulContent = this.articleObject[this.correntId].notice;
-        this.userName = this.articleObject[this.correntId].userName;
-        this.gameName = this.articleObject[this.correntId].gameName;
-        this.profile = this.articleObject[this.correntId].profile;
 
-        this.editPath = `/edit/${this.correntId}`;
+        console.log(this.articleObject);
+
+        this.userName = this.articleObject.userName;
+        this.gameName = this.articleObject.gameName;
+        this.profile = this.articleObject.profile;
+        this.mealCarefulContent = this.articleObject.meal_description;
+        this.gameCarefulContent = this.articleObject.notice;
 
         this.dataList = this.chartItems.datasets[0].data;
+        console.log(this.dataList)
         this.dataList.push(
-          parseInt(this.articleObject[this.correntId].schedule[0].start_time) *
+          parseInt(this.articleObject.schedule[0].start_time) *
             60
         );
         this.maxTime -=
-          parseInt(this.articleObject[this.correntId].schedule[0].start_time) *
+          parseInt(this.articleObject.schedule[0].start_time) *
           60;
         this.beforeTime = parseInt(
-          this.articleObject[this.correntId].schedule[0].start_time
+          this.articleObject.schedule[0].start_time
         );
-        //this.dataList[this.dataList.length - 1] = (1440 - parseInt(this.articleObject[this.correntId].schedule[0].start_time) * 60);
 
-        //this.dataList = this.chartItems.datasets[0].data;
-        //this.dataList.unshift(parseInt(this.articleObject[this.correntId].schedule[0].start_time) * 60);
-        //console.log(this.dataList);
 
         for (
           let i = 0;
-          i < this.articleObject[this.correntId].schedule.length;
+          i < this.articleObject.schedule.length;
           i++
         ) {
           //this.articlesList.push(this.articleObject[i].schedule[i]);
 
           this.scheduleList.push({
-            start_time:
-              this.articleObject[this.correntId].schedule[i].start_time,
-            end_time: this.articleObject[this.correntId].schedule[i].end_time,
-            menu: this.articleObject[this.correntId].schedule[i].menu,
+            start_time: this.articleObject.schedule[i].start_time,
+            end_time: this.articleObject.schedule[i].end_time,
+            menu: this.articleObject.schedule[i].menu,
           });
 
           /*
-          if (parseInt(this.articleObject[this.correntId].schedule[i].end_time) < parseInt(this.articleObject[this.correntId].schedule[i].start_time)) {
+          if (parseInt(this.articleObject.schedule[i].end_time) < parseInt(this.articleObject.schedule[i].start_time)) {
             
           }
           */
           if (
             this.beforeTime !=
-            parseInt(this.articleObject[this.correntId].schedule[i].start_time)
+            parseInt(this.articleObject.schedule[i].start_time)
           ) {
             this.dataList.push(
               (parseInt(
-                this.articleObject[this.correntId].schedule[i].start_time
+                this.articleObject.schedule[i].start_time
               ) -
                 this.beforeTime) *
                 60
             );
           }
           this.beforeTime = parseInt(
-            this.articleObject[this.correntId].schedule[i].end_time
+            this.articleObject.schedule[i].end_time
           );
 
           this.dataList.push(
-            (parseInt(this.articleObject[this.correntId].schedule[i].end_time) -
+            (parseInt(this.articleObject.schedule[i].end_time) -
               parseInt(
-                this.articleObject[this.correntId].schedule[i].start_time
+                this.articleObject.schedule[i].start_time
               )) *
               60
           );
           //this.dataList[this.dataList.length - 1] = this.dataList[this.dataList.length - 1] - this.dataList[0];
           this.maxTime -=
-            (parseInt(this.articleObject[this.correntId].schedule[i].end_time) -
+            (parseInt(this.articleObject.schedule[i].end_time) -
               parseInt(
-                this.articleObject[this.correntId].schedule[i].start_time
+                this.articleObject.schedule[i].start_time
               )) *
             60;
-          console.log(this.dataList);
+          console.log(`dataList: ${this.dataList}`);
         }
 
         this.dataList.push(this.maxTime);
-        this.fillData();
+        this.fillData(this.dataList);
         //this.testObject = response.data.data;
-        console.log(this.scheduleList);
-        console.log(this.articleObject[0].meal_description);
-        console.log(this.articleObject[0].notice);
+
       })
       .catch((error) => {
         console.log(error);
@@ -220,17 +210,39 @@ export default {
       .finally(() => (this.loading = false));
   },
   methods: {
-    fillData() {
-      this.chartItems = {
-        datasets: [
-          {
-            label: "一日の生活",
-            backgroundColor: "#847636",
-            data: this.dataList,
-          },
-        ],
-      };
+    fillData(props = "") {
+      if(!props) {
+        this.chartItems = {
+          datasets: [
+            {
+              label: "一日の生活",
+              backgroundColor: "#847636",
+              data: [1440],
+            },
+          ],
+        }
+      } else {
+        this.chartItems = {
+          datasets: [
+            {
+              label: "一日の生活",
+              backgroundColor: "#847636",
+              data: props,
+            },
+          ],
+        }
+      }
     },
+    async onDelete() {
+      try {
+        await axios.delete(`http://localhost:8893/api/articles/${this.$route.params.selectId}`);
+
+        // re-route "/"
+        this.$router.push("/")
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
   },
 };
 </script>
