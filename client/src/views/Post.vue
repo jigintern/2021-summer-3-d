@@ -185,8 +185,8 @@ export default {
     PieChart,
     "vue-timepicker": VueTimePicker,
   },
-  mounted: function() {
-    this.fillData()
+  mounted: function () {
+    this.fillData();
   },
   data() {
     return {
@@ -199,6 +199,7 @@ export default {
       actionContent: null,
       actionDataList: [],
       latestId: 0,
+      beforeTime: 25,
       chartItems: null,
       startTimeObject: {
         HH: "00",
@@ -231,20 +232,31 @@ export default {
         this.chartItems.datasets[0]["data"][
           this.chartItems.datasets[0]["data"].length - 1
         ];
-
+      /*
       this.chartItems.datasets[0]["data"].unshift(addTime);
       this.chartItems.datasets[0]["data"][
         this.chartItems.datasets[0]["data"].length - 1
       ] = maxTime - addTime;
+      */
+      if (this.chartItems.datasets[0]["data"].length != 1) {
+        this.chartItems.datasets[0]["data"][
+          this.chartItems.datasets[0]["data"].length - 1
+        ] = addTime;
+        this.chartItems.datasets[0]["data"].push(maxTime - addTime);
+      } else {
+        this.chartItems.datasets[0]["data"].unshift(addTime);
+        this.chartItems.datasets[0]["data"][
+          this.chartItems.datasets[0]["data"].length - 1
+        ] = maxTime - addTime;
+      }
+      console.log(this.chartItems);
 
-      console.log(this.chartItems)
-
-      this.fillData(this.chartItems.datasets[0]["data"])
+      this.fillData(this.chartItems.datasets[0]["data"]);
 
       this.actionContent = "";
     },
     fillData(props = "") {
-      if(!props) {
+      if (!props) {
         this.chartItems = {
           datasets: [
             {
@@ -253,7 +265,7 @@ export default {
               data: [1440],
             },
           ],
-        }
+        };
       } else {
         this.chartItems = {
           datasets: [
@@ -263,7 +275,7 @@ export default {
               data: props,
             },
           ],
-        }
+        };
       }
     },
     postData() {
@@ -287,10 +299,10 @@ export default {
           },
           config
         )
-        .then(({data}) => {
-          if(data.success) {
+        .then(({ data }) => {
+          if (data.success) {
             // re-route "/"
-            this.$router.push("/")
+            this.$router.push("/");
           } else {
             alert(data.msg);
           }
@@ -300,7 +312,7 @@ export default {
           this.errored = true;
         })
         .finally(() => (this.loading = false));
-    }
+    },
   },
 };
 </script>
