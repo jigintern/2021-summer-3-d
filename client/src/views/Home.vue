@@ -58,7 +58,7 @@ export default {
   },
   mounted () {
     axios
-      .get('http://localhost:8893/api/articles')
+      .get('https://3d.intern.jigd.info/api/articles')
       .then(response => {
         this.articleObject = response.data.data;
 

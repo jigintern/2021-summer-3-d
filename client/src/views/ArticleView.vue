@@ -121,7 +121,7 @@ export default {
   },
   mounted: function () {
     axios
-      .get(`http://localhost:8893/api/articles/${this.$route.params.selectId}`)
+      .get(`https://3d.intern.jigd.info/api/articles/${this.$route.params.selectId}`)
       .then((response) => {
         this.articleObject = response.data.data;
 
@@ -235,7 +235,7 @@ export default {
     },
     async onDelete() {
       try {
-        await axios.delete(`http://localhost:8893/api/articles/${this.$route.params.selectId}`);
+        await axios.delete(`https://3d.intern.jigd.info/api/articles/${this.$route.params.selectId}`);
 
         // re-route "/"
         this.$router.push("/")
