@@ -17,7 +17,8 @@
                   placeholder="ユーザーネーム"
                   solo
                   :class="`rounded-xl custom-placeholder-color custom-label-color`"
-                />
+                >
+                </v-text-field>
                 <div class="my-1" />
                 <v-text-field
                   v-model="gameName"
@@ -27,17 +28,19 @@
                   placeholder="主にプレイしているゲーム"
                   solo
                   :class="`rounded-xl custom-placeholder-color custom-label-color`"
-                />
+                >
+                </v-text-field>
                 <div class="my-1" />
                 <v-text-field
-                  v-model="profile"
+                  v-model="gameName"
                   background-color="#676767"
                   label="プロフィール"
                   style="width: 800px"
                   placeholder="プロフィール"
                   solo
                   :class="`rounded-xl custom-placeholder-color custom-label-color`"
-                />
+                >
+                </v-text-field>
                 <div class="my-1" />
               </v-col>
             </v-row>
@@ -57,7 +60,7 @@
                 </v-text-field>
                 <div v-if="this.actionDataList.length !== 0">
                   <div v-for="(action, key) in actionDataList" :key="key">
-                    <div class="white--text text-h5">
+                    <div v-if="action.startTime !== '' && action.endTime !== ''" class="white--text text-h5">
                       ・{{ action.startTime }}～{{ action.endTime }}:{{
                         action.menu
                       }}
@@ -163,7 +166,7 @@
       </v-container>
       <v-container>
         <v-row justify="end">
-          <v-btn v-on:click="postData()" color="#46DC39">投稿する</v-btn>
+          <v-btn v-on:click="updateData()" color="#46DC39">Edit</v-btn>
         </v-row>
       </v-container>
       <div class="my-5" />
@@ -178,13 +181,18 @@ import "vue2-timepicker/dist/VueTimepicker.css";
 import axios from "axios";
 
 export default {
-  name: "Post",
+  name: "Edit",
   components: {
     PieChart,
     "vue-timepicker": VueTimePicker,
   },
-  mounted: function() {
-    this.fillData()
+  mounted: async function() {
+    const {data} = await this.getData();
+    this.setData(data);
+    data.schedule.forEach((s) => {
+      this.convertScheduleToChartItems(s);
+    })
+    this.fillData(this.chartItems.datasets[0]["data"]);
   },
   data() {
     return {
@@ -197,7 +205,15 @@ export default {
       actionContent: null,
       actionDataList: [],
       latestId: 0,
-      chartItems: null,
+      chartItems: {
+        datasets: [
+          {
+            label: "一日の生活",
+            backgroundColor: "#847636",
+            data: [1440],
+          },
+        ],
+      },
       startTimeObject: {
         HH: "00",
         mm: "00",
@@ -262,35 +278,56 @@ export default {
         }
       }
     },
-    postData() {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
+    async getData() {
+      try {
+        const res = await axios.get(`http://localhost:8893/api/articles/${this.$route.params.id}`);
+        return res.data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    setData(data) {
+      this.userName = data.userName;
+      this.gameName = data.gameName;
+      this.mealCarefulContent = data.meal_description;
+      this.gameCarefulContent = data.notice;
+      // this.actionDataList = data.schedule;
+      this.profile = data.profile;
+    },
+    convertScheduleToChartItems(data) {
+      this.actionDataList.push({
+        startTime: `${data.start_time}`,
+        endTime: `${data.end_time}`,
+        menu: data.menu,
+      });
 
-      //const body = JSON.stringify();
-      axios
-        .post(
-          "http://localhost:8893/api/articles/",
-          {
-            userName: this.userName,
-            gameName: this.gameName,
-            meal_description: this.mealCarefulContent,
-            notice: this.gameCarefulContent,
-            profile: this.profile,
-            schedule: this.actionDataList,
+      let list = this.actionDataList;
+      let addTime =
+        (parseInt(list[list.length - 1].endTime) -
+          parseInt(list[list.length - 1].startTime)) *
+        60;
+      let maxTime =
+        this.chartItems.datasets[0]["data"][
+          this.chartItems.datasets[0]["data"].length - 1
+        ];
+
+      this.chartItems.datasets[0]["data"].unshift(addTime);
+      this.chartItems.datasets[0]["data"][
+        this.chartItems.datasets[0]["data"].length - 1
+      ] = maxTime - addTime;
+    },
+    async updateData() {
+      try {
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
           },
-          config
-        )
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-          this.errored = true;
-        })
-        .finally(() => (this.loading = false));
+        };
+        await axios.put(`http://localhost:8893/api/articles/${this.$route.params.id}`, config);
+      } catch (err) {
+        console.error(err)
+      }
+
     }
   },
 };
