@@ -5,6 +5,8 @@
       <v-container>
         <v-row justify="center" align-content="center">
           <v-col>
+            <h1 class="blue--text">編集画面</h1>
+            <div class="my-5" />
             <v-row justify="center" align-content="center">
               <v-col>
                 <div class="white--text text-h4">プロフィール</div>
@@ -163,7 +165,7 @@
       </v-container>
       <v-container>
         <v-row justify="end">
-          <v-btn v-on:click="postData()" color="#46DC39">投稿する</v-btn>
+          <v-btn v-on:click="postData()" color="blue">投稿する</v-btn>
         </v-row>
       </v-container>
       <div class="my-5" />
@@ -303,6 +305,7 @@ export default {
   opacity: 1;
 }
 */
+
 .custom-placeholder-color input {
   color: white !important;
   opacity: 1;
