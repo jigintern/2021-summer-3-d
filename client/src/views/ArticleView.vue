@@ -75,6 +75,8 @@
 import PieChart from "../components/PieChart.vue";
 import "vue2-timepicker/dist/VueTimepicker.css";
 import axios from "axios";
+import { BASE_PATH } from "../conts.js";
+
 export default {
   name: "Post",
   components: {
@@ -121,7 +123,7 @@ export default {
   },
   mounted: function () {
     axios
-      .get(`https://3d.intern.jigd.info/api/articles/${this.$route.params.selectId}`)
+      .get(`${BASE_PATH}api/articles/${this.$route.params.selectId}`)
       .then((response) => {
         this.articleObject = response.data.data;
 
@@ -235,7 +237,7 @@ export default {
     },
     async onDelete() {
       try {
-        await axios.delete(`https://3d.intern.jigd.info/api/articles/${this.$route.params.selectId}`);
+        await axios.delete(`${BASE_PATH}api/articles/${this.$route.params.selectId}`);
 
         // re-route "/"
         this.$router.push("/")

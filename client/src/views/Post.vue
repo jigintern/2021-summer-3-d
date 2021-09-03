@@ -178,6 +178,7 @@ import PieChart from "../components/PieChart.vue";
 import VueTimePicker from "vue2-timepicker";
 import "vue2-timepicker/dist/VueTimepicker.css";
 import axios from "axios";
+import { BASE_PATH } from "../conts.js";
 
 export default {
   name: "Post",
@@ -288,7 +289,7 @@ export default {
       //const body = JSON.stringify();
       axios
         .post(
-          "https://3d.intern.jigd.info/api/articles",
+          BASE_PATH + "api/articles",
           {
             userName: this.userName,
             gameName: this.gameName,
