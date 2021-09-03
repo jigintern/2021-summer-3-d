@@ -62,7 +62,10 @@
                 </v-text-field>
                 <div v-if="this.actionDataList.length !== 0">
                   <div v-for="(action, key) in actionDataList" :key="key">
-                    <div v-if="action.start_time !== '' && action.end_time !== ''" class="white--text text-h5">
+                    <div
+                      v-if="action.start_time !== '' && action.end_time !== ''"
+                      class="white--text text-h5"
+                    >
                       ・{{ action.start_time }}～{{ action.end_time }}:{{
                         action.menu
                       }}
@@ -188,12 +191,12 @@ export default {
     PieChart,
     "vue-timepicker": VueTimePicker,
   },
-  mounted: async function() {
-    const {data} = await this.getData();
+  mounted: async function () {
+    const { data } = await this.getData();
     this.setData(data);
     data.schedule.forEach((s) => {
       this.convertScheduleToChartItems(s);
-    })
+    });
     this.fillData(this.chartItems.datasets[0]["data"]);
   },
   data() {
@@ -207,6 +210,7 @@ export default {
       actionContent: null,
       actionDataList: [],
       latestId: 0,
+      beforeTime: 25,
       chartItems: {
         datasets: [
           {
@@ -248,17 +252,29 @@ export default {
           this.chartItems.datasets[0]["data"].length - 1
         ];
 
+      /*
       this.chartItems.datasets[0]["data"].unshift(addTime);
       this.chartItems.datasets[0]["data"][
         this.chartItems.datasets[0]["data"].length - 1
       ] = maxTime - addTime;
-
-      this.fillData(this.chartItems.datasets[0]["data"])
+      */
+      if (this.chartItems.datasets[0]["data"].length != 1) {
+        this.chartItems.datasets[0]["data"][
+          this.chartItems.datasets[0]["data"].length - 1
+        ] = addTime;
+        this.chartItems.datasets[0]["data"].push(maxTime - addTime);
+      } else {
+        this.chartItems.datasets[0]["data"].unshift(addTime);
+        this.chartItems.datasets[0]["data"][
+          this.chartItems.datasets[0]["data"].length - 1
+        ] = maxTime - addTime;
+      }
+      this.fillData(this.chartItems.datasets[0]["data"]);
 
       this.actionContent = "";
     },
     fillData(props = "") {
-      if(!props) {
+      if (!props) {
         this.chartItems = {
           datasets: [
             {
@@ -267,7 +283,7 @@ export default {
               data: [1440],
             },
           ],
-        }
+        };
       } else {
         this.chartItems = {
           datasets: [
@@ -277,12 +293,14 @@ export default {
               data: props,
             },
           ],
-        }
+        };
       }
     },
     async getData() {
       try {
-        const res = await axios.get(`http://localhost:8893/api/articles/${this.$route.params.id}`);
+        const res = await axios.get(
+          `http://localhost:8893/api/articles/${this.$route.params.id}`
+        );
         return res.data;
       } catch (err) {
         console.log(err);
@@ -327,28 +345,30 @@ export default {
         };
 
         const body = {
-          "userName": this.userName,
-          "gameName": this.gameName,
-          "profile": this.profile,
-          "schedule": this.actionDataList,
-          "meal_description": this.mealCarefulContent,
-          "notice": this.gameCarefulContent
-        }
+          userName: this.userName,
+          gameName: this.gameName,
+          profile: this.profile,
+          schedule: this.actionDataList,
+          meal_description: this.mealCarefulContent,
+          notice: this.gameCarefulContent,
+        };
 
-        const {data} = await axios.put(`http://localhost:8893/api/articles/${this.$route.params.id}`, body, config);
+        const { data } = await axios.put(
+          `http://localhost:8893/api/articles/${this.$route.params.id}`,
+          body,
+          config
+        );
 
-        if(data.success) {
+        if (data.success) {
           // re-route "/"
-          this.$router.push("/")
+          this.$router.push("/");
         } else {
           alert(data.msg);
         }
-
       } catch (err) {
-        console.error(err)
+        console.error(err);
       }
-
-    }
+    },
   },
 };
 </script>
