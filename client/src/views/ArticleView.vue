@@ -49,7 +49,6 @@
 import PieChart from "../components/PieChart.vue";
 import "vue2-timepicker/dist/VueTimepicker.css";
 import axios from "axios";
-
 export default {
   name: "Post",
   props:["selectId"],
@@ -59,6 +58,8 @@ export default {
   data() {
     return {
       isChartExist: false,
+      maxTime: 1440,
+      beforeTime: 0,
       correntId: 1,
       dataList: [],
       actionContent: "Apex",
@@ -68,7 +69,6 @@ export default {
         "Apexはとてもイライラすることも多いので、無理せずイライラするときはランク溶かす前にやめるのも重要です。",
       actionDataList: [],
       scheduleList: [],
-
       startTimeObject: {
         HH: "00",
         mm: "00",
@@ -81,7 +81,7 @@ export default {
         datasets: [
           {
             label: "一日の生活",
-            data: [1440],
+            data: [],
             backgroundColor: "#847636",
           },
         ],
@@ -93,32 +93,58 @@ export default {
     };
   },
   mounted: function() {
-    console.log(this.selectId);
+
     axios
-      .get("http://localhost:8004/api/articles/")
+      .get("http://localhost:8893/api/articles/")
       .then((response) => {
         this.articleObject = response.data.data;
         //this.articlesList.push(this.articleObject[0]);
         this.correntId = this.selectId - 1;
-
         this.mealCarefulContent = this.articleObject[this.correntId].meal_description;
         this.gameCarefulContent = this.articleObject[this.correntId].notice;
 
+        this.dataList = this.chartItems.datasets[0].data;
+        this.dataList.push(parseInt(this.articleObject[this.correntId].schedule[0].start_time) * 60); 
+        this.maxTime -= parseInt(this.articleObject[this.correntId].schedule[0].start_time) * 60;
+        this.beforeTime = parseInt(this.articleObject[this.correntId].schedule[0].start_time);
+        //this.dataList[this.dataList.length - 1] = (1440 - parseInt(this.articleObject[this.correntId].schedule[0].start_time) * 60);
+
+        //this.dataList = this.chartItems.datasets[0].data;
+        //this.dataList.unshift(parseInt(this.articleObject[this.correntId].schedule[0].start_time) * 60);
+        //console.log(this.dataList);
+
         for (let i = 0; i < this.articleObject[this.correntId].schedule.length; i++) {
           //this.articlesList.push(this.articleObject[i].schedule[i]);
+
           this.scheduleList.push({
               start_time: this.articleObject[this.correntId].schedule[i].start_time,
               end_time: this.articleObject[this.correntId].schedule[i].end_time,
               menu: this.articleObject[this.correntId].schedule[i].menu
           });
+
+          /*
+          if(parseInt(this.articleObject[this.correntId].schedule[i].end_time) < parseInt(this.articleObject[this.correntId].schedule[i].start_time)){
+
+          }
+          */
+         if (this.beforeTime != parseInt(this.articleObject[this.correntId].schedule[i].start_time)) {
+           this.dataList.push((parseInt(this.articleObject[this.correntId].schedule[i].start_time) - this.beforeTime) * 60);
+         }
+         this.beforeTime = parseInt(this.articleObject[this.correntId].schedule[i].end_time);
+         
+         this.dataList.push((parseInt(this.articleObject[this.correntId].schedule[i].end_time) - parseInt(this.articleObject[this.correntId].schedule[i].start_time)) * 60);
+          //this.dataList[this.dataList.length - 1] = this.dataList[this.dataList.length - 1] - this.dataList[0];
+         this.maxTime -= (parseInt(this.articleObject[this.correntId].schedule[i].end_time) - parseInt(this.articleObject[this.correntId].schedule[i].start_time)) * 60;
+         console.log(this.dataList);
+          
         }
 
+        this.dataList.push(this.maxTime);
+        this.fillData();
         //this.testObject = response.data.data;
-
         console.log(this.scheduleList);
         console.log(this.articleObject[0].meal_description);
         console.log(this.articleObject[0].notice);
-
       })
       .catch((error) => {
         console.log(error);
@@ -126,6 +152,19 @@ export default {
       })
       .finally(() => (this.loading = false));
   },
+  methods: {
+    fillData(){
+      this.chartItems = {
+        datasets: [
+          {
+            label: "一日の生活",
+            backgroundColor: "#847636",
+            data: this.dataList,
+          },
+        ],
+      }
+    }
+  }
 };
 </script>
 

@@ -7,9 +7,10 @@
       <v-row class="flex-column" align-content="center">
         <v-col cols="1" md="6" v-for="user in users" :key="user">
           <UserProfile
+            :id="user.id"
             :userName="user.userName"
             :gameName="user.gameName"
-            :userComment="user.userComment"
+            :userComment="user.profile"
           ></UserProfile>
         </v-col>
       </v-row>
@@ -19,12 +20,21 @@
 
 <script>
 import UserProfile from '../components/UserProfile.vue';
+import axios from "axios";
 // import sidebar from '../components/sidebar.vue';
 export default {
   name: "Home",
+  components: {
+    UserProfile,
+    // sidebar
+  },
   data () {
     return {
+      articlesList: [],
+      articleObject: {},
+      testObject: {},
       users: [
+        /*
         {
           userName: 'やまゆ',
           gameName: 'Apex',
@@ -40,13 +50,28 @@ export default {
           gameName: 'R6S',
           userComment:"vaerrgiikejkjek"
         }
+        */
       ]
     }
   },
+  mounted () {
+    axios
+      .get('http://localhost:8893/api/articles')
+      .then(response => {
+        this.articleObject = response.data.data;
 
-  components: {
-    UserProfile,
-    // sidebar
+        for (let i = 0; i < this.articleObject.length; i++) {
+          this.users.push(this.articleObject[i]);
+        }
+
+        this.testObject = response.data.data[0];
+        console.log(this.testObject);
+      })
+      .catch(error => {
+        console.log(error)
+        this.errored = true
+      })
+      .finally(() => this.loading = false)
   },
 };
 </script>
