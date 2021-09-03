@@ -60,7 +60,7 @@
                 <div v-if="this.actionDataList.length !== 0">
                   <div v-for="(action, key) in actionDataList" :key="key">
                     <div class="white--text text-h5">
-                      ・{{ action.startTime }}～{{ action.endTime }}:{{
+                      ・{{ action.start_time }}～{{ action.end_time }}:{{
                         action.menu
                       }}
                     </div>
@@ -217,15 +217,15 @@ export default {
   methods: {
     addActionData() {
       this.actionDataList.push({
-        startTime: `${this.startTimeObject.HH}`,
-        endTime: `${this.endTimeObject.HH}`,
+        start_time: `${this.startTimeObject.HH}`,
+        end_time: `${this.endTimeObject.HH}`,
         menu: this.actionContent,
       });
 
       let list = this.actionDataList;
       let addTime =
-        (parseInt(list[list.length - 1].endTime) -
-          parseInt(list[list.length - 1].startTime)) *
+        (parseInt(list[list.length - 1].end_time) -
+          parseInt(list[list.length - 1].start_time)) *
         60;
       let maxTime =
         this.chartItems.datasets[0]["data"][
@@ -236,6 +236,8 @@ export default {
       this.chartItems.datasets[0]["data"][
         this.chartItems.datasets[0]["data"].length - 1
       ] = maxTime - addTime;
+
+      console.log(this.chartItems)
 
       this.fillData(this.chartItems.datasets[0]["data"])
 
@@ -285,8 +287,13 @@ export default {
           },
           config
         )
-        .then((response) => {
-          console.log(response.data);
+        .then(({data}) => {
+          if(data.success) {
+            // re-route "/"
+            this.$router.push("/")
+          } else {
+            alert(data.msg);
+          }
         })
         .catch((error) => {
           console.log(error);
