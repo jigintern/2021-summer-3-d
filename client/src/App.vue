@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app color="dark" dark height="100">
-      <v-toolbar-title class="text-h4 ml-4"> break </v-toolbar-title>
+      <v-toolbar-title class="text-h4 ml-4"> br<span style="color:blue">e</span>ak </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-row align-content="center">
         <v-col>
@@ -38,3 +38,9 @@ export default {
   data: () => ({}),
 };
 </script>
+
+<style scoped>
+.v-btn--active .mdi:before {
+  color: blue
+}
+</style>
