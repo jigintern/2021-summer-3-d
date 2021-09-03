@@ -299,7 +299,7 @@ export default {
     async getData() {
       try {
         const res = await axios.get(
-          `http://localhost:8893/api/articles/${this.$route.params.id}`
+          `https://3d.intern.jigd.info/api/articles/${this.$route.params.id}`
         );
         return res.data;
       } catch (err) {
@@ -354,7 +354,7 @@ export default {
         };
 
         const { data } = await axios.put(
-          `http://localhost:8893/api/articles/${this.$route.params.id}`,
+          `https://3d.intern.jigd.info/api/articles/${this.$route.params.id}`,
           body,
           config
         );
