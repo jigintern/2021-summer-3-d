@@ -23,7 +23,9 @@
 <script>
 import UserProfile from '../components/UserProfile.vue';
 import axios from "axios";
+import { BASE_PATH } from "../conts.js";
 // import sidebar from '../components/sidebar.vue';
+
 export default {
   name: "Home",
   components: {
@@ -58,7 +60,7 @@ export default {
   },
   mounted () {
     axios
-      .get('https://3d.intern.jigd.info/api/articles')
+      .get(BASE_PATH + 'api/articles')
       .then(response => {
         this.articleObject = response.data.data;
 

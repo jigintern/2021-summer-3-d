@@ -5,9 +5,9 @@ cd client
 npm run build
 
 cd ..
-rm -r static
+rm -rf static
 
 cp -r ./client/dist ./static
 
 #server
-./server.sh
+sh ./server.sh
